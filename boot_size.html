@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shoe Size Calculator</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+      .container {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        width: 400px;
+        text-align: center;
+      }
+      h1 {
+        color: #333;
+        margin-bottom: 20px;
+      }
+      input,
+      select,
+      button {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      .result {
+        margin-top: 20px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Shoe Size Calculator</h1>
+      <select id="gender">
+        <option value="">Select Gender</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
+      <input type="number" id="height" placeholder="Enter height (cm)" />
+      <input type="number" id="weight" placeholder="Enter weight (kg)" />
+      <button onclick="calculateShoeSizes()">Calculate Shoe Size</button>
+      <div class="result" id="result"></div>
+    </div>
+
+    <script>
+      function calculateShoeSizes() {
+        const gender = document.getElementById("gender").value;
+        const height = parseFloat(document.getElementById("height").value);
+        const weight = parseFloat(document.getElementById("weight").value);
+        const resultDiv = document.getElementById("result");
+
+        // Validate inputs
+        if (!gender) {
+          resultDiv.innerHTML =
+            "<p style='color:red;'>Please select your gender.</p>";
+          return;
+        }
+        if (isNaN(height) || height <= 0) {
+          resultDiv.innerHTML =
+            "<p style='color:red;'>Please enter a valid height.</p>";
+          return;
+        }
+        if (isNaN(weight) || weight <= 0) {
+          resultDiv.innerHTML =
+            "<p style='color:red;'>Please enter a valid weight.</p>";
+          return;
+        }
+
+        // Estimate foot length in cm (adjusted for better accuracy)
+        const footLength = (height * 0.16 + weight * 0.03).toFixed(1);
+
+        // Conversion formulas
+        const euSize = Math.round(footLength + 1.5);
+        const usSize = gender === "male" ? euSize - 33 : euSize - 31.5;
+        const ukSize = usSize - 1;
+        const jpSize = Math.round(footLength * 1.04);
+        const chSize = Math.round(footLength * 1.5);
+
+        // Display the results
+        const tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Region</th>
+                            <th>Shoe Size</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>EU</td><td>${euSize}</td></tr>
+                        <tr><td>US</td><td>${usSize.toFixed(1)}</td></tr>
+                        <tr><td>UK</td><td>${ukSize.toFixed(1)}</td></tr>
+                        <tr><td>Japan</td><td>${jpSize}</td></tr>
+                        <tr><td>China</td><td>${chSize}</td></tr>
+                    </tbody>
+                </table>
+            `;
+        resultDiv.innerHTML = `
+                <p>Estimated Foot Length: ${footLength} cm</p>
+                ${tableHTML}
+            `;
+      }
+    </script>
+  </body>
+</html>
